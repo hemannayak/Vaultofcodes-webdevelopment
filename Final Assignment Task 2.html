@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>User Registration Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="form-container">
+        <h2>Register</h2>
+        <form>
+
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="Enter your full name" required>
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="Enter your email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Create password" required>
+            <meter max="4" id="strength-meter"></meter>
+
+            <label for="confirm-password">Confirm Password</label>
+            <input type="password" id="confirm-password" placeholder="Re-enter password" required>
+
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob" required>
+
+            <label>Gender</label>
+            <div class="gender-options">
+                <label><input type="radio" name="gender" value="male"> Male</label>
+                <label><input type="radio" name="gender" value="female"> Female</label>
+                <label><input type="radio" name="gender" value="other"> Other</label>
+            </div>
+
+            <label for="profile">Profile Picture</label>
+            <input type="file" id="profile" accept="image/*">
+
+            <label>
+                <input type="checkbox" required> I agree to the Terms and Conditions
+            </label>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <script>
+        const password = document.getElementById('password');
+        const meter = document.getElementById('strength-meter');
+
+        password.addEventListener('input', () => {
+            const val = password.value;
+            let strength = 0;
+            if (val.length >= 8) strength++;
+            if (/[A-Z]/.test(val)) strength++;
+            if (/[0-9]/.test(val)) strength++;
+            if (/[^A-Za-z0-9]/.test(val)) strength++;
+            meter.value = strength;
+        });
+    </script>
+
+</body>
+
+</html>
