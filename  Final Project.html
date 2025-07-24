@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory Card Game</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+        }
+
+        .game-container {
+            width: 90vmin;
+            max-width: 600px;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.3s;
+            transform-style: preserve-3d;
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .card.flipped .front {
+            transform: rotateY(180deg);
+        }
+
+        .card.flipped .back {
+            transform: rotateY(0deg);
+        }
+
+        .front,
+        .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+        }
+
+        .front {
+            background-color: #e0e0e0;
+            transform: rotateY(0deg);
+        }
+
+        .back {
+            background-color: #f06292;
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .matched {
+            background-color: #66bb6a !important;
+            cursor: default;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="game-container">
+        <h1>🎮 Memory Card Game</h1>
+        <div class="board" id="board"></div>
+    </div>
+
+    <script>
+        const emojis = ['🐶', '🐱', '🦊', '🐻', '🐼', '🐨', '🐸', '🐵'];
+        const cards = [...emojis, ...emojis];
+        let flippedCards = [];
+        let matchedCount = 0;
+
+        // Shuffle function
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        const board = document.getElementById('board');
+        let shuffledCards = shuffle(cards);
+
+        // Create cards on the board
+        shuffledCards.forEach((emoji, index) => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.dataset.emoji = emoji;
+
+            card.innerHTML = `
+        <div class="front">❓</div>
+        <div class="back">${emoji}</div>
+      `;
+
+            card.addEventListener('click', () => flipCard(card));
+            board.appendChild(card);
+        });
+
+        function flipCard(card) {
+            if (
+                card.classList.contains('flipped') ||
+                card.classList.contains('matched') ||
+                flippedCards.length === 2
+            ) return;
+
+            card.classList.add('flipped');
+            flippedCards.push(card);
+
+            if (flippedCards.length === 2) {
+                const [first, second] = flippedCards;
+
+                if (first.dataset.emoji === second.dataset.emoji) {
+                    first.classList.add('matched');
+                    second.classList.add('matched');
+                    matchedCount += 2;
+
+                    if (matchedCount === cards.length) {
+                        setTimeout(() => {
+                            alert("🎉 You matched all cards! Restarting game...");
+                            window.location.reload();
+                        }, 800);
+                    }
+
+                    flippedCards = [];
+                } else {
+                    setTimeout(() => {
+                        first.classList.remove('flipped');
+                        second.classList.remove('flipped');
+                        flippedCards = [];
+                    }, 800);
+                }
+            }
+        }
+    </script>
+
+</body>
+
+</html>
